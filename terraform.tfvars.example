@@ -1,0 +1,16 @@
+# Example configuration for uptime checks
+uptime_checks = [
+  {
+    hostname         = "example.com"
+    path             = "/"
+    check_frequency  = 300  # Frequency in seconds
+    content_matching = "Example Content"
+    alert_duration   = 3600 # Duration in seconds
+    severity         = "WARNING" # Choose from 'CRITICAL', 'ERROR', 'WARNING'
+  },
+  # Add more configurations as needed
+]
+
+# Notification channel ID (replace with your actual channel ID)
+notification_channel_id = "projects/your-gcp-project-id/notificationChannels/your-channel-id"
+
