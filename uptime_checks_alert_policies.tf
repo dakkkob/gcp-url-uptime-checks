@@ -35,42 +35,43 @@ resource "google_monitoring_uptime_check_config" "uptime_check" {
   }
 }
 
-resource "google_monitoring_alert_policy" "alert_policy" {
-  for_each = { for idx, check in var.uptime_checks : idx => check }
+resource "google_monitoring_alert_policy" "alert_policy" {  
 
-  display_name = "${each.value.hostname}${each.value.path}"
+  display_name = "Aggregated Policy For URL Uptime Checks"
   combiner     = "OR"
   conditions {
-    display_name = "Uptime Check Condition"
+    display_name = "Aggregated Condition For URL Uptime Checks"
     condition_threshold {
-      filter = "metric.type=\"monitoring.googleapis.com/uptime_check/check_passed\" AND metric.label.check_id=\"${google_monitoring_uptime_check_config.uptime_check[each.key].uptime_check_id}\" AND resource.type=\"uptime_url\""
-      duration   = "3600s"
-      comparison = "COMPARISON_GT"
+      filter = "metric.type=\"monitoring.googleapis.com/uptime_check/check_passed\" AND resource.type=\"uptime_url\""
+      duration   = "${var.rolling_window_seconds}s"
+      comparison = "COMPARISON_LT"
       aggregations {
-        alignment_period     = "1200s"
-        per_series_aligner   = "ALIGN_NEXT_OLDER"
-        cross_series_reducer = "REDUCE_COUNT_FALSE"
-        group_by_fields      = ["resource.label.*"]
+        alignment_period     = "${var.rolling_window_seconds}s"
+        per_series_aligner   = "ALIGN_FRACTION_TRUE"
       }
-      threshold_value = 1.0
       trigger {
-        count = 1
-      }
+        count = 1  # Trigger the alert after the condition has been met once. Adjust this to a higher number to require multiple periods.
+      }      
+      threshold_value = var.alert_threshold
     }
   }
-
-				 
 
   notification_channels = [
     var.notification_channel_id
   ]
 
   documentation {
-    content   = "Uptime check failed for ${each.value.hostname}${each.value.path}"
+    content = <<-EOT
+      Alert triggered: $${condition.display_name}.
+      This condition triggers if less than ${var.alert_threshold} *100 percent of uptime checks pass over a rolling window of ${var.rolling_window_seconds} seconds.
+      Affected Host: $${metric.label.host}.
+      Check ID: $${metric.label.check_id}.
+      Resource Project: $${resource.project}.
+    EOT
     mime_type = "text/markdown"
   }
 
-  severity = each.value.severity
+  severity = var.alert_severity
 }
 
 output "uptime_check_ids" {
@@ -78,6 +79,5 @@ output "uptime_check_ids" {
 }
 
 output "alert_policy_ids" {
-  value = { for idx, check in google_monitoring_alert_policy.alert_policy : idx => check.id }
+  value = google_monitoring_alert_policy.alert_policy.id
 }
-

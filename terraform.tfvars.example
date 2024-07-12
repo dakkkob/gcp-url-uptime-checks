@@ -14,3 +14,6 @@ uptime_checks = [
 # Notification channel ID (replace with your actual channel ID)
 notification_channel_id = "projects/your-gcp-project-id/notificationChannels/your-channel-id"
 
+alert_severity          = "WARNING"
+alert_threshold         = "0.30"
+rolling_window_seconds  = "3600"

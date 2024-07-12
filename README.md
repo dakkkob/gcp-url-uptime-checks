@@ -1,10 +1,10 @@
 # GCP Uptime Checks and Alert Policies with Terraform
 
-This repository contains Terraform code to set up uptime checks and alert policies for multiple websites in Google Cloud Platform (GCP).
+This repository contains Terraform code to set up uptime checks and alert policy for multiple websites in Google Cloud Platform (GCP).
 
 ## Files
 
-- `uptime_checks_alert_policies.tf`: Contains the Terraform code to create uptime check configurations and corresponding alert policies in GCP.
+- `uptime_checks_alert_policies.tf`: Contains the Terraform code to create uptime check configurations and corresponding alert policy in GCP.
 - `variables.tf`: Defines the input variables required by the Terraform code.
 - `terraform.tfvars.example`: An example of variable definitions. Rename to `terraform.tfvars` and update with your values before running Terraform.
 
