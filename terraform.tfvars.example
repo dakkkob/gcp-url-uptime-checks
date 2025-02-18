@@ -6,7 +6,6 @@ uptime_checks = [
     check_frequency  = 300  # Frequency in seconds
     content_matching = "Example Content"
     alert_duration   = 3600 # Duration in seconds
-    severity         = "WARNING" # Choose from 'CRITICAL', 'ERROR', 'WARNING'
   },
   # Add more configurations as needed
 ]
