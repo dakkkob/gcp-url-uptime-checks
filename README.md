@@ -1,36 +1,43 @@
 # GCP Uptime Checks and Alert Policies with Terraform
 
-This repository contains Terraform code to set up uptime checks and alert policy for multiple websites in Google Cloud Platform (GCP).
+Terraform code to set up HTTPS uptime checks and a single alert policy for multiple websites in Google Cloud Platform (GCP). Checks run from 3 regions (Europe, US Virginia, Asia Pacific) and verify both availability and page content.
 
 ## Files
 
-- `uptime_checks_alert_policies.tf`: Contains the Terraform code to create uptime check configurations and corresponding alert policy in GCP.
-- `variables.tf`: Defines the input variables required by the Terraform code.
-- `terraform.tfvars.example`: An example of variable definitions. Rename to `terraform.tfvars` and update with your values before running Terraform.
-
-## Usage
-
-1. **Clone the Repository:**
-
-git clone https://github.com/dakkkob/gcp-url-uptime-checks
-cd gcp-url-uptime-checks
-
-2. **Configure Your Variables:**
-- Rename `terraform.tfvars.example` to `terraform.tfvars`.
-- Update the values in `terraform.tfvars` with your specific configuration details.
-
-3. **Initialize Terraform:**
-
-terraform init
-
-4. **Apply the Terraform Configuration:**
-
-terraform apply
+- `uptime_checks_alert_policies.tf`: Terraform resources for uptime checks and the aggregated alert policy.
+- `variables.tf`: Input variable definitions.
+- `terraform.tfvars.example`: Example configuration — copy to `terraform.tfvars` and fill in your values.
 
 ## Requirements
 
-- A Google Cloud Platform account.
-- A configured GCP project with necessary APIs enabled.
-- An existing notification channel and its ID
-- Terraform installed on your machine or use of Google Cloud Shell.
+- A GCP project with the **Cloud Monitoring API** enabled (`monitoring.googleapis.com`).
+- Authenticated `gcloud` CLI (`gcloud auth application-default login`).
+- An existing **email notification channel** in GCP. Create one at: GCP Console → Monitoring → Alerting → Notification Channels. Copy the full resource ID (format: `projects/PROJECT_ID/notificationChannels/CHANNEL_ID`).
+- Terraform >= 1.0.
 
+> **Free tier note:** GCP includes 3 uptime checks at no cost. Each additional check costs ~$0.75/month. The single alert policy and email notifications are free.
+
+## Usage
+
+1. **Clone the repository:**
+   ```
+   git clone https://github.com/dakkkob/gcp-url-uptime-checks
+   cd gcp-url-uptime-checks
+   ```
+
+2. **Configure your variables:**
+   ```
+   cp terraform.tfvars.example terraform.tfvars
+   ```
+   Edit `terraform.tfvars` with your project ID, notification channel ID, and the list of sites to monitor.
+
+3. **Initialize Terraform:**
+   ```
+   terraform init
+   ```
+
+4. **Preview and apply:**
+   ```
+   terraform plan
+   terraform apply
+   ```

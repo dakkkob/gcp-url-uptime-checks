@@ -1,18 +1,25 @@
-# Example configuration for uptime checks
+# GCP project to deploy monitoring resources into
+project_id = "your-gcp-project-id"
+
+# Notification channel ID — create one in GCP Console under Monitoring > Alerting > Notification Channels
+notification_channel_id = "projects/your-gcp-project-id/notificationChannels/your-channel-id"
+
 uptime_checks = [
   {
     hostname         = "example.com"
     path             = "/"
-    check_frequency  = 300  # Frequency in seconds
-    content_matching = "Example Content"
-    alert_duration   = 3600 # Duration in seconds
+    check_frequency  = 300  # seconds; minimum 60
+    content_matching = "Expected text on the page"
   },
-  # Add more configurations as needed
+  {
+    hostname         = "www.example.com"
+    path             = "/about"
+    check_frequency  = 300
+    content_matching = "About us"
+  },
+  # Add more sites as needed. Note: GCP free tier covers 3 checks; each additional costs ~$0.75/month.
 ]
 
-# Notification channel ID (replace with your actual channel ID)
-notification_channel_id = "projects/your-gcp-project-id/notificationChannels/your-channel-id"
-
-alert_severity          = "WARNING"
-alert_threshold         = "0.30"
-rolling_window_seconds  = "3600"
+alert_severity         = "WARNING"
+alert_threshold        = 0.90   # alert if less than 90% of checks pass
+rolling_window_seconds = 3600   # 1 hour evaluation window

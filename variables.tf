@@ -1,11 +1,15 @@
+variable "project_id" {
+  description = "The GCP project ID to deploy resources into."
+  type        = string
+}
+
 variable "uptime_checks" {
-  description = "List of uptime check configurations. Severity can be one of 'CRITICAL', 'ERROR', 'WARNING'."
+  description = "List of uptime check configurations."
   type = list(object({
     hostname         = string
     path             = string
     check_frequency  = number
     content_matching = string
-    alert_duration   = number    
   }))
 }
 
@@ -15,13 +19,13 @@ variable "notification_channel_id" {
 }
 
 variable "alert_threshold" {
-  description = "The alert will be triggered when website availability within the specified rolling window is less than this threshold. In percent. (0.30 = 30%)"
+  description = "Alert triggers when the fraction of passing checks within the rolling window drops below this value. (0.90 = alert if less than 90% of checks pass)"
   type        = number
-  default     = 0.30
+  default     = 0.90
 }
 
 variable "alert_severity" {
-  description = "Severity level of the alert."
+  description = "Severity level of the alert. One of: CRITICAL, ERROR, WARNING."
   type        = string
   default     = "WARNING"
 }
@@ -29,5 +33,5 @@ variable "alert_severity" {
 variable "rolling_window_seconds" {
   description = "The length of time in seconds over which to measure the metric for triggering the alert. Commonly set to 3600 seconds (1 hour)."
   type        = number
-  default     = 3600  # Default to one hour
+  default     = 3600
 }
