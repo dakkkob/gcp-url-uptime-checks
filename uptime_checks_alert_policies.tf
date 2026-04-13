@@ -30,7 +30,8 @@ resource "google_monitoring_uptime_check_config" "uptime_check" {
   monitored_resource {
     type = "uptime_url"
     labels = {
-      host = each.value.hostname
+      host       = each.value.hostname
+      project_id = var.project_id
     }
   }
 }
@@ -43,7 +44,7 @@ resource "google_monitoring_alert_policy" "alert_policy" {
     display_name = "Aggregated Condition For URL Uptime Checks"
     condition_threshold {
       filter     = "metric.type=\"monitoring.googleapis.com/uptime_check/check_passed\" AND resource.type=\"uptime_url\""
-      duration   = "0s"
+      duration   = "${var.alert_duration_seconds}s"
       comparison = "COMPARISON_LT"
       aggregations {
         alignment_period   = "${var.rolling_window_seconds}s"

@@ -35,3 +35,9 @@ variable "rolling_window_seconds" {
   type        = number
   default     = 3600
 }
+
+variable "alert_duration_seconds" {
+  description = "How long the condition must be continuously violated before the alert fires. Use 0 for immediate, or e.g. 600 for a 10-minute grace period to avoid flapping on transient failures."
+  type        = number
+  default     = 600
+}
