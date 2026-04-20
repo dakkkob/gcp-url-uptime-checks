@@ -47,8 +47,10 @@ resource "google_monitoring_alert_policy" "alert_policy" {
       duration   = "${var.alert_duration_seconds}s"
       comparison = "COMPARISON_LT"
       aggregations {
-        alignment_period   = "${var.rolling_window_seconds}s"
-        per_series_aligner = "ALIGN_FRACTION_TRUE"
+        alignment_period     = "${var.rolling_window_seconds}s"
+        per_series_aligner   = "ALIGN_FRACTION_TRUE"
+        cross_series_reducer = "REDUCE_MEAN"
+        group_by_fields      = ["resource.label.host", "metric.label.check_id"]
       }
       trigger {
         count = 1
